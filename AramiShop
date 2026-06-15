@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AramiSmartphone - Catálogo Premium</title>
+    <style>
+        :root {
+            --primary: #00b4d8;
+            --primary-dark: #0077b6;
+            --dark: #121212;
+            --card-bg: #1e1e1e;
+            --light: #f8f9fa;
+            --text-gray: #aaaaaa;
+            --success: #25D366;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            overflow-x: hidden;
+            padding-bottom: 60px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #292929;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--light);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .admin-trigger-btn {
+            background: #292929;
+            color: var(--light);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .admin-trigger-btn:hover {
+            background: var(--primary);
+        }
+
+        /* Main Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 3rem 1.5rem;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(0,180,216,0.1) 0%, rgba(12,12,12,0) 100%);
+        }
+
+        .hero h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+
+        .hero p {
+            color: var(--text-gray);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Navigation Tabs / Filters Style Temu */
+        .categories-nav {
+            display: flex;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 0.5rem 1rem 1rem 1rem;
+            gap: 0.5rem;
+            scrollbar-width: none;
+        }
+
+        .categories-nav::-webkit-scrollbar {
+            display: none;
+        }
+
+        .cat-chip {
+            background-color: #222;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--light);
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cat-chip.active {
+            background-color: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        /* Products Grid */
+        .products-container {
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .products-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 1.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .products-container {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Product Card Style Temu Fluid */
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #2a2a2a;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .card-img-container {
+            width: 100%;
+            padding-top: 100%; /* Aspect ratio 1:1 */
+            position: relative;
+            background-color: #252525;
+        }
+
+        .card-img-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product-card:hover .card-img-container img {
+            transform: scale(1.05);
+        }
+
+        .card-info {
+            padding: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            line-height: 1.3;
+            height: 2.6rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--light);
+        }
+
+        .card-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: auto;
+            margin-bottom: 0.2rem;
+        }
+
+        .card-tag {
+            font-size: 0.75rem;
+            background: rgba(0, 180, 216, 0.15);
+            color: var(--primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            align-self: flex-start;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            font-weight: bold;
+            display: none; /* Controlado dinámicamente */
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Fluid Product Modal / Detail Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 200;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            background-color: #1a1a1a;
+            width: 100%;
+            max-width: 600px;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            max-height: 85vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            padding: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .modal-overlay {
+                align-items: center;
+                padding: 2rem;
+            }
+            .modal-container {
+                border-radius: 16px;
+                max-height: 90vh;
+            }
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .close-modal {
+            background: #2a2a2a;
+            border: none;
+            color: var(--light);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Carousel inside Modal */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            padding-top: 80%;
+            background: #222;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .carousel-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 15;
+        }
+
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+        }
+
+        .carousel-dot.active {
+            background: var(--primary);
+            width: 18px;
+            border-radius: 4px;
+        }
+
+        .modal-body h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .modal-desc-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: var(--light);
+        }
+
+        .modal-description {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            white-space: pre-line;
+        }
+
+        /* WhatsApp Fluid CTA */
+        .whatsapp-cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            background-color: var(--success);
+            color: white;
+            text-decoration: none;
+            padding: 1rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease, background-color 0.2s;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .whatsapp-cta-btn:hover {
+            background-color: #20ba5a;
+            transform: scale(1.02);
+        }
+
+        /* Full Panel Admin Drawer */
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            background: #161616;
+            z-index: 300;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.5);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .admin-panel.active {
+            transform: translateX(0);
+        }
+
+        .admin-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .admin-form-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+
+        .admin-form-group input, .admin-form-group select, .admin-form-group textarea {
+            width: 100%;
+            background: #252525;
+            border: 1px solid #333;
+            padding: 0.75rem;
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+        }
+
+        .admin-form-group input:focus, .admin-form-group select:focus, .admin-form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .submit-item-btn {
+            background: var(--primary);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 1rem;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+
+        .submit-item-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .admin-status-indicator {
+            background: rgba(0, 180, 216, 0.1);
+            border: 1px dashed var(--primary);
+            padding: 0.5rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #444;
+            font-size: 0.85rem;
+            border-top: 1px solid #222;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="logo">Arami<span>Shop</span></div>
+        <button class="admin-trigger-btn" id="adminTriggerBtn" onclick="toggleAdminPanel()">Modo Admin</button>
+    </header>
+
+    <!-- Hero Header Style Temu Showcase -->
+    <section class="hero">
+        <h1>Explora Energía y Tecnología</h1>
+        <p>Toca cualquier artículo para ver sus imágenes completas, especificaciones detalladas y cotizar al instante por WhatsApp.</p>
+    </section>
+
+    <!-- Category Selector Pill Bars -->
+    <div class="categories-nav">
+        <div class="cat-chip active" onclick="filterCategory('all', this)">⚡ Todo</div>
+        <div class="cat-chip" onclick="filterCategory('EcoFlow', this)">🔋 EcoFlow</div>
+        <div class="cat-chip" onclick="filterCategory('Audio', this)">🎧 Audífonos</div>
+        <div class="cat-chip" onclick="filterCategory('Smartwatch', this)">⌚ Relojes</div>
+        <div class="cat-chip" onclick="filterCategory('Ventiladores', this)">💨 Ventiladores</div>
+    </div>
+
+    <!-- Active Admin Bar Notification -->
+    <div class="admin-status-indicator" id="adminStatusIndicator">
+        🔒 Modo Administrador Activo — Puedes eliminar artículos tocando la (X) roja en las tarjetas.
+    </div>
+
+    <!-- Main Dynamic Products Space -->
+    <main class="products-container" id="productsGrid">
+        <!-- Generado dinámicamente por JS -->
+    </main>
+
+    <!-- Fluid Slider Overlay Details Drawer -->
+    <div class="modal-overlay" id="productModal" onclick="closeProductModal(event)">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="card-tag" id="modalCategory">Categoría</span>
+                <button class="close-modal" onclick="closeProductModal(null)">✕</button>
+            </div>
+            
+            <!-- Dynamic Images Fluid Track Slider -->
+            <div class="carousel-container">
+                <div class="carousel-track" id="modalCarouselTrack">
+                    <!-- Imágenes insertadas desde JS -->
+                </div>
+                <div class="carousel-nav" id="modalCarouselNav">
+                    <!-- Puntos de navegación dinámicos -->
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <h2 id="modalTitle">Nombre del Producto</h2>
+                <div class="modal-price" id="modalPrice">$0.00</div>
+                <div class="modal-desc-title">Descripción General</div>
+                <p class="modal-description" id="modalDescription">Detalles del artículo...</p>
+                
+                <!-- Enlace dinámico de WhatsApp API -->
+                <a href="#" target="_blank" class="whatsapp-cta-btn" id="modalWhatsAppBtn">
+                    <svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23-1.48 0-2.93-.4-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.183 8.183 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.25-8.23M8.47 7.12c-.15 0-.39.06-.6.28-.2.22-.78.76-.78 1.85 0 1.09.79 2.14.9 2.3.11.15 1.55 2.37 3.77 3.32.53.23.94.37 1.26.47.53.17 1.01.14 1.39.09.43-.06 1.31-.54 1.5-1.05.19-.51.19-.95.13-1.05-.06-.09-.23-.15-.49-.28-.26-.13-1.51-.74-1.74-.83-.23-.09-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.55.06-1.08-.54-1.84-1.05-2.56-2.3-.19-.32-.02-.5.11-.63.12-.12.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.5-.41-.42-.56-.43h-.42Z"/>
+                    </svg>
+                    Cotizar Disponibilidad por WhatsApp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel Lateral Oculto (Formulario Administrador) -->
+    <div class="admin-panel" id="adminPanel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+            <h3>Panel Administrador</h3>
+            <button class="close-modal" onclick="toggleAdminPanel()">✕</button>
+        </div>
+        
+        <div class="admin-form-group">
+            <label>Título del Artículo</label>
+            <input type="text" id="newItemTitle" placeholder="Ej: EcoFlow Delta 3 Clásica">
+        </div>
+
+        <div class="admin-form-group">
+            <label>Categoría</label>
+            <select id="newItemCategory">
+                <option value="EcoFlow">EcoFlow</option>
+                <option value="Audio">Audífonos</option>
+                <option value="Smartwatch">Smartwatch</option>
+                <option value="Ventiladores">Ventiladores</option>
+            </select>
+        </div>
+
+        <div class="admin-form-group">
+            <label>Precio de Exhibición</label>
+            <input type="text" id="newItemPrice" placeholder="Ej: $1,499.00">
+        </div>
+
+        <div class="admin-form-group">
+            <label>Descripción Completa</label>
+            <textarea id="newItemDescription" rows="4" placeholder="Escribe características, puertos, potencia, etc..."></textarea>
+        </div>
+
+        <div class="admin-form-group">
+            <label>URL Imagen Principal (Obligatoria)</label>
+            <input type="text" id="newItemImg1" placeholder="https://enlace-imagen.com/foto1.jpg">
+        </div>
+
+        <div class="admin-form-group">
+            <label>URL Imagen Secundaria 2 (Opcional)</label>
+            <input type="text" id="newItemImg2" placeholder="https://enlace-imagen.com/foto2.jpg">
+        </div>
+
+        <div class="admin-form-group">
+            <label>URL Imagen Secundaria 3 (Opcional)</label>
+            <input type="text" id="newItemImg3" placeholder="https://enlace-imagen.com/foto3.jpg">
+        </div>
+
+        <button class="submit-item-btn" onclick="addNewProductFromForm()">Publicar Artículo en Catálogo</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 AramiSmartphone / Importaciones Premium. Interfaz Fluida Temu-Style.</p>
+    </footer>
+
+    <!-- Lógica de la Aplicación -->
+    <script>
+        // Configuración básica (Reemplazar con tu número real)
+        const WHATSAPP_NUMBER = "+5356173316"; 
+        let isAdminAuthenticated = false;
+        let currentActiveCategory = 'all';
+
+        // Base de datos inicial cargada por defecto
+        let initialProducts = [
+            {
+                id: 1,
+                title: "EcoFlow Delta 3 Clásica",
+                category: "EcoFlow",
+                price: "$1,399.00",
+                description: "Estación de energía portátil Premium con la velocidad de carga más rápida del mercado. Capacidad expandible avanzada, ideal para respaldar electrodomésticos enteros de tu hogar, emergencias o proyectos industriales pesados.",
+                images: [
+                    "https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?auto=format&fit=crop&w=600&q=80",
+                    "https://images.unsplash.com/photo-1585842378404-e223a6369b34?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 2,
+                title: "EcoFlow Delta 2",
+                category: "EcoFlow",
+                price: "$999.00",
+                description: "Una necesidad absoluta para el respaldo del hogar. Salida de CA de 1800W para alimentar más del 90% de tus electrodomésticos. Química LiFePO4 premium de alta durabilidad para más de 3000 ciclos completos.",
+                images: [
+                    "https://images.unsplash.com/photo-1545259742-b4fe87376faa?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 3,
+                title: "EcoFlow River 2",
+                category: "EcoFlow",
+                price: "$299.00",
+                description: "Estación de energía portátil ultracompacta y ligera. Carga de 0 a 100% en solo 60 minutos. Perfecta para viajes, camping, o recargas veloces de drones, laptops y smartphones.",
+                images: [
+                    "https://images.unsplash.com/photo-1624996379697-f01d168b1a52?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 4,
+                title: "EcoFlow River 2 Pro",
+                category: "EcoFlow",
+                price: "$599.00",
+                description: "Potencia portátil de alta capacidad para exteriores. Salida de 800W con picos X-Boost superiores. Recarga completa de manera simple e inteligente en menos de 70 minutos.",
+                images: [
+                    "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 5,
+                title: "Audífonos Recargables In-Ear",
+                category: "Audio",
+                price: "$39.99",
+                description: "Audífonos inalámbricos de alta fidelidad con cancelación de ruido ambiental pasiva. Estuche inteligente recargable con pantalla LED indicadora de porcentaje de batería. Ajuste ergonómico.",
+                images: [
+                    "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 6,
+                title: "Relojes Inteligentes Smartwatch Pro",
+                category: "Smartwatch",
+                price: "$65.00",
+                description: "Monitoreo completo de salud y actividades deportivas en tiempo real. Pantalla táctil AMOLED de alta resolución fluida, notificaciones de WhatsApp integradas, control de llamadas y batería optimizada de larga duración.",
+                images: [
+                    "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 7,
+                title: "Ventilador Recargable F6",
+                category: "Ventiladores",
+                price: "$24.50",
+                description: "Ventilador portátil recargable de mesa modelo F6. Tres velocidades variables silenciosas, batería integrada de alta eficiencia ideal para cortes de energía eléctrica y fácil transporte.",
+                images: [
+                    "https://images.unsplash.com/photo-1618945533008-091002593aa6?auto=format&fit=crop&w=600&q=80"
+                ]
+            },
+            {
+                id: 8,
+                title: "Ventilador Recargable F22 Heavy Duty",
+                category: "Ventiladores",
+                price: "$34.99",
+                description: "Modelo F22 mejorado con aspas de alta eficiencia y rejilla protectora oscilante. Gran autonomía de refresco continuo con una sola carga mediante puerto USB Tipo-C.",
+                images: [
+                    "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80"
+                ]
+            }
+        ];
+
+        // Cargar desde LocalStorage si ya existen datos modificados por el admin
+        let products = JSON.parse(localStorage.getItem('arami_products')) || initialProducts;
+
+        // Renderizar la cuadrícula de artículos de forma dinámica
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            
+            const filtered = currentActiveCategory === 'all' 
+                ? products 
+                : products.filter(p => p.category === currentActiveCategory);
+
+            filtered.forEach(product => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.setAttribute('onclick', `openProductModal(${product.id})`);
+                
+                // Mostrar u ocultar las X según el estado actual de la autenticación
+                const deleteDisplay = isAdminAuthenticated ? 'flex' : 'none';
+                
+                card.innerHTML = `
+                    <button class="delete-btn" style="display: ${deleteDisplay}" onclick="deleteProductItem(event, ${product.id})">✕</button>
+                    <div class="card-img-container">
+                        <img src="${product.images[0] || 'https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=400&q=80'}" alt="${product.title}" loading="lazy">
+                    </div>
+                    <div class="card-info">
+                        <span class="card-tag">${product.category}</span>
+                        <h3 class="card-title">${product.title}</h3>
+                        <div class="card-price">${product.price}</div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filtros horizontales por categorías
+        function filterCategory(category, element) {
+            currentActiveCategory = category;
+            document.querySelectorAll('.cat-chip').forEach(chip => chip.classList.remove('active'));
+            element.classList.add('active');
+            renderProducts();
+        }
+
+        // CONTROL REPARADO: Permite entrar y salir correctamente limpiando la pantalla
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            const adminBtn = document.getElementById('adminTriggerBtn');
+            const statusIndicator = document.getElementById('adminStatusIndicator');
+            
+            if (!isAdminAuthenticated) {
+                // Entrada al modo administrador con la clave secreta
+                let passwordAttempt = prompt("Introduce la Contraseña de Administrador para gestionar el catálogo:");
+                if (passwordAttempt === "1973 0 1 4 0 2 0 0 2" || passwordAttempt === "197301402002") {
+                    isAdminAuthenticated = true;
+                    statusIndicator.style.display = 'block';
+                    adminBtn.innerText = "Cerrar Admin";
+                    adminBtn.style.background = '#ef4444'; // Cambia a botón rojo de salida
+                    panel.classList.add('active');
+                    renderProducts(); // Redibuja el catálogo inyectando los botones (X)
+                } else if (passwordAttempt !== null) {
+                    alert("Contraseña incorrecta. Acceso denegado.");
+                }
+            } else {
+                // CIERRE TOTAL Y SEGURO DEL MODO ADMIN
+                isAdminAuthenticated = false;
+                statusIndicator.style.display = 'none';
+                adminBtn.innerText = "Modo Admin";
+                adminBtn.style.background = '#292929'; // Regresa al tono gris original
+                panel.classList.remove('active'); // Oculta el panel lateral por completo
+                renderProducts(); // Redibuja limpiando las (X) para que quede modo cliente regular
+                alert("Modo Administrador desactivado con éxito.");
+            }
+        }
+
+        // Insertar un nuevo producto desde el panel de control
+        function addNewProductFromForm() {
+            const title = document.getElementById('newItemTitle').value.trim();
+            const category = document.getElementById('newItemCategory').value;
+            const price = document.getElementById('newItemPrice').value.trim();
+            const description = document.getElementById('newItemDescription').value.trim();
+            const img1 = document.getElementById('newItemImg1').value.trim();
+            const img2 = document.getElementById('newItemImg2').value.trim();
+            const img3 = document.getElementById('newItemImg3').value.trim();
+
+            if (!title || !price || !img1) {
+                alert("Por favor rellena al menos el Título, Precio e Imagen Principal.");
+                return;
+            }
+
+            let imagesArray = [img1];
+            if(img2) imagesArray.push(img2);
+            if(img3) imagesArray.push(img3);
+
+            const newProduct = {
+                id: Date.now(),
+                title: title,
+                category: category,
+                price: price.startsWith('$') ? price : '$' + price,
+                description: description || "Sin descripción adicional.",
+                images: imagesArray
+            };
+
+            products.push(newProduct);
+            localStorage.setItem('arami_products', JSON.stringify(products));
+            
+            // Limpieza automática de casillas del formulario
+            document.getElementById('newItemTitle').value = '';
+            document.getElementById('newItemPrice').value = '';
+            document.getElementById('newItemDescription').value = '';
+            document.getElementById('newItemImg1').value = '';
+            document.getElementById('newItemImg2').value = '';
+            document.getElementById('newItemImg3').value = '';
+            
+            document.getElementById('adminPanel').classList.remove('active');
+            renderProducts();
+            alert("¡Artículo agregado con éxito al catálogo!");
+        }
+
+        // Eliminar por completo un artículo de la lista local
+        function deleteProductItem(event, id) {
+            event.stopPropagation(); // Evita que se despliegue el modal al presionar la X
+            if (confirm("¿Estás seguro de que deseas quitar este artículo por completo del catálogo?")) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('arami_products', JSON.stringify(products));
+                renderProducts();
+            }
+        }
+
+        // Lógica de navegación interna del Carrusel de Fotos
+        let currentSlideIndex = 0;
+        let activeSlideImages = [];
+
+        function openProductModal(id) {
+            const product = products.find(p => p.id === id);
+            if (!product) return;
+
+            document.getElementById('modalCategory').innerText = product.category;
+            document.getElementById('modalTitle').innerText = product.title;
+            document.getElementById('modalPrice').innerText = product.price;
+            document.getElementById('modalDescription').innerText = product.description;
+
+            // Formatear el mensaje automático para WhatsApp
+            const waMessage = `Hola, estoy interesado en cotizar el siguiente artículo de tu tienda: *${product.title}* con precio de exhibición de *${product.price}*. ¿Tienen disponibilidad?`;
+            document.getElementById('modalWhatsAppBtn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waMessage)}`;
+
+            const track = document.getElementById('modalCarouselTrack');
+            const navDots = document.getElementById('modalCarouselNav');
+            track.innerHTML = '';
+            navDots.innerHTML = '';
+            
+            activeSlideImages = product.images;
+            currentSlideIndex = 0;
+            track.style.transform = `translateX(0%)`;
+
+            product.images.forEach((imgUrl, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `<img src="${imgUrl}" alt="${product.title} vista ${index+1}">`;
+                track.appendChild(slide);
+
+                const dot = document.createElement('div');
+                dot.className = `carousel-dot ${index === 0 ? 'active' : ''}`;
+                dot.setAttribute('onclick', `goToSlide(${index})`);
+                navDots.appendChild(dot);
+            });
+
+            // Activa soporte de gestos táctiles deslizando el dedo (Swipe)
+            setupSwipeDetection(track);
+
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function closeProductModal(event) {
+            if(!event || event.target.id === 'productModal' || event === null) {
+                document.getElementById('productModal').classList.remove('active');
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlideIndex = index;
+            const track = document.getElementById('modalCarouselTrack');
+            track.style.transform = `translateX(-${index * 100}%)`;
+            
+            document.querySelectorAll('.carousel-dot').forEach((dot, idx) => {
+                if(idx === index) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
+        // Manejo fluido de arrastre táctil para celulares (Carrusel Estilo App)
+        function setupSwipeDetection(element) {
+            let startX = 0;
+            let endX = 0;
+            
+            element.addEventListener('touchstart', e => {
+                startX = e.changedTouches[0].screenX;
+            }, {passive: true});
+
+            element.addEventListener('touchend', e => {
+                endX = e.changedTouches[0].screenX;
+                handleSwipeGesture();
+            }, {passive: true});
+
+            function handleSwipeGesture() {
+                if (startX - endX > 50) {
+                    // Deslizar izquierda -> Siguiente foto
+                    if (currentSlideIndex < activeSlideImages.length - 1) {
+                        goToSlide(currentSlideIndex + 1);
+                    }
+                }
+                if (endX - startX > 50) {
+                    // Deslizar derecha -> Foto anterior
+                    if (currentSlideIndex > 0) {
+                        goToSlide(currentSlideIndex - 1);
+                    }
+                }
+            }
+        }
+
+        // Inicialización de la Tienda al arrancar la página
+        window.onload = () => {
+            renderProducts();
+        };
+    </script>
+</body>
+</html>
